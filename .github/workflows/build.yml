@@ -31,4 +31,4 @@ jobs:
         with:
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: catchdigital/awscli:latest,catchdigital/awscli:${{ env.RELEASE_VERSION }}
+          tags: catchdigital/toolbox:latest,catchdigital/toolbox:${{ env.RELEASE_VERSION }}

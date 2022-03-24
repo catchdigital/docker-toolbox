@@ -65,9 +65,13 @@ RUN unzip awscliv2.zip && \
     ./aws/install
 
 # Install aws eb cli
-# TODO: Adding 'LIBSODIUM_MAKE_ARGS=-j4' might speed up the install of pynacl
-RUN LIBSODIUM_MAKE_ARGS=-j4 pip install awsebcli --upgrade --user
-# RUN pip install awsebcli --upgrade --user
+RUN git clone https://github.com/aws/aws-elastic-beanstalk-cli-setup.git
+RUN pip install virtualenv
+RUN python3 ./aws-elastic-beanstalk-cli-setup/scripts/ebcli_installer.py
+ENV PATH=/root/.ebcli-virtual-env/executables:${PATH}
+
+# Install Ansible
+RUN pip install ansible
 
 # Clean up aws files.
 RUN rm -Rf awscliv2.zip aws
