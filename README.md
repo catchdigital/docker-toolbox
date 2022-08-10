@@ -2,7 +2,7 @@
 
 Basic image to use for builds.
 
-This image is based on php 8.0-fpm
+This image is based on php 8.1-fpm
 
 ## Features
 
@@ -13,7 +13,7 @@ Tools in this image:
 * aws cdk: 2.17.0
 * aws amplify: 7.6.26
 * eb: 3.20.3
-* php: 8.0.12-fpm
+* php: 8.1.8-fpm
 * node: v14.19.1
 * npm: 8.5.5
 * composer: 2.2.9

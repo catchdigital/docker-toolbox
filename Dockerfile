@@ -1,4 +1,4 @@
-FROM php:8.0-fpm
+FROM php:8.1-fpm
 MAINTAINER Alberto Conteras <a.contreras@catchdigital.com>
 
 # Get build target.
