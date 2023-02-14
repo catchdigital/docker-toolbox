@@ -1,5 +1,5 @@
 FROM php:8.1-fpm
-MAINTAINER Alberto Conteras <a.contreras@catchdigital.com>
+LABEL org.opencontainers.image.authors="a.contreras@catchdigital.com"
 
 # Get build target.
 ARG TARGETPLATFORM
@@ -45,7 +45,7 @@ RUN apt-get install -y \
 RUN docker-php-ext-install bcmath
 
 # Install node and npm
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get -y install nodejs && npm install -g npm@latest
 
 ## Install tools
