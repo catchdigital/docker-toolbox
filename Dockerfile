@@ -41,47 +41,9 @@ RUN apt-get install -y \
   docker-php-ext-install -j${NPROC} gd zip && \
   apt-get remove -y libfreetype6-dev libpng-dev libfreetype6-dev
 
-# Install BCMath
-RUN docker-php-ext-install bcmath
-
 # Install node and npm
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get -y install nodejs && npm install -g npm@latest
-
-## Install tools
-# Install aws cli v2
-RUN case $TARGETPLATFORM in \
-  linux/amd64) \
-    curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip \
-    ;; \
-  linux/arm64) \
-    curl https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip -o awscliv2.zip \
-    ;; \
-  *) \
-    echo "unsupported architecture"; exit 1 ;; \
-esac
-
-RUN unzip awscliv2.zip && \
-    ./aws/install
-
-# Install aws eb cli
-RUN git clone https://github.com/aws/aws-elastic-beanstalk-cli-setup.git
-RUN pip install virtualenv
-RUN python3 ./aws-elastic-beanstalk-cli-setup/scripts/ebcli_installer.py
-ENV PATH=/root/.ebcli-virtual-env/executables:${PATH}
-
-# Install Ansible
-RUN pip install ansible
-
-# Clean up aws files.
-RUN rm -Rf awscliv2.zip aws
-
-# Install aws cdk and aws amplify cli
-RUN npm install -g aws-cdk @aws-amplify/cli
-
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-ENV COMPOSER_HOME '/usr/composer'
 
 # Clean up installations
 RUN apt-get -y autoremove && apt-get -y clean
