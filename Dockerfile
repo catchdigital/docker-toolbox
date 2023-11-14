@@ -1,4 +1,4 @@
-FROM php:8.1-fpm
+FROM php:8.2-fpm
 LABEL org.opencontainers.image.authors="a.contreras@catchdigital.com"
 
 # Get build target.
@@ -12,8 +12,8 @@ RUN case $TARGETPLATFORM in \
 esac
 
 ## Install dependencies
-RUN apt-get update \
-    && apt-get install -y \
+RUN apt update \
+    && apt install -y \
     less \
     groff \
     jq \
@@ -21,15 +21,15 @@ RUN apt-get update \
     curl \
     rsync \
     ssh \
-    python \
     python3 \
     python3-pip \
     zip \
     libzip-dev \
-    gnupg2
+    gnupg2 \
+    ca-certificates
 
 # Install GD and other dependencies
-RUN apt-get install -y \
+RUN apt install -y \
         libjpeg-dev \
         libpng-dev \
         libjpeg62-turbo \
@@ -45,8 +45,15 @@ RUN apt-get install -y \
 RUN docker-php-ext-install bcmath
 
 # Install node and npm
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get -y install nodejs && npm install -g npm@latest
+## Download and import the Nodesource GPG key
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+## Create deb repository
+RUN NODE_MAJOR=20 &&\
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+## Run Update and Install
+RUN apt update && apt install -y nodejs
+
 
 ## Install tools
 # Install aws cli v2
@@ -65,13 +72,15 @@ RUN unzip awscliv2.zip && \
     ./aws/install
 
 # Install aws eb cli
-RUN git clone https://github.com/aws/aws-elastic-beanstalk-cli-setup.git
-RUN pip install virtualenv
-RUN python3 ./aws-elastic-beanstalk-cli-setup/scripts/ebcli_installer.py
-ENV PATH=/root/.ebcli-virtual-env/executables:${PATH}
+# RUN git clone https://github.com/aws/aws-elastic-beanstalk-cli-setup.git
+# RUN apt install -y python3-virtualenv
+# RUN python3 ./aws-elastic-beanstalk-cli-setup/scripts/ebcli_installer.py
+# ENV PATH=/root/.ebcli-virtual-env/executables:${PATH}
+RUN pip install awsebcli --upgrade --user --break-system-packages
 
 # Install Ansible
-RUN pip install ansible
+RUN python3 -m pip install --user ansible-core --break-system-packages
+ENV PATH=/root/.local/bin:${PATH}
 
 # Clean up aws files.
 RUN rm -Rf awscliv2.zip aws
