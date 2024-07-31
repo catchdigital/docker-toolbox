@@ -26,7 +26,8 @@ RUN apt update \
     zip \
     libzip-dev \
     gnupg2 \
-    ca-certificates
+    ca-certificates \
+    xdg-utils
 
 # Install GD and other dependencies
 RUN apt install -y \
@@ -53,7 +54,6 @@ RUN NODE_MAJOR=20 &&\
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 ## Run Update and Install
 RUN apt update && apt install -y nodejs
-
 
 ## Install tools
 # Install aws cli v2
@@ -90,7 +90,7 @@ RUN npm install -g aws-cdk @aws-amplify/cli
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-ENV COMPOSER_HOME '/usr/composer'
+ENV COMPOSER_HOME='/usr/composer'
 
 # Clean up installations
 RUN apt-get -y autoremove && apt-get -y clean
