@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 LABEL org.opencontainers.image.authors="a.contreras@catchdigital.com"
 
 # Get build target.
@@ -91,6 +91,11 @@ RUN npm install -g aws-cdk @aws-amplify/cli
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 ENV COMPOSER_HOME='/usr/composer'
+
+# Add Acquia CLI
+RUN curl -OL https://github.com/acquia/cli/releases/latest/download/acli.phar && \
+    chmod +x acli.phar && \
+    mv acli.phar /usr/local/bin/acli
 
 # Clean up installations
 RUN apt-get -y autoremove && apt-get -y clean
