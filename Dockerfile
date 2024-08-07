@@ -45,6 +45,9 @@ RUN apt install -y \
 # Install BCMath
 RUN docker-php-ext-install bcmath
 
+# Upadte memory limit for php
+RUN echo "memory_limit = 512M" > /usr/local/etc/php/conf.d/memory-limit.ini
+
 # Install node and npm
 ## Download and import the Nodesource GPG key
 RUN mkdir -p /etc/apt/keyrings && \
