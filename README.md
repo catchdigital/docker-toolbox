@@ -14,9 +14,11 @@ Tools in this image:
 * aws amplify: 12.13.1
 * eb: 3.21.0
 * php: 8.3.14-fpm
+* nvm: 0.39.7
 * node: v20.18.1
 * npm: 10.8.2
 * composer: 2.8.3
+* python2: 2.7.0
 * python3: 3.11.2
 * ansible: 2.18.0
 * acli: 2.35.1
