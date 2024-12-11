@@ -42,21 +42,35 @@ RUN apt install -y \
   docker-php-ext-install -j${NPROC} gd zip && \
   apt-get remove -y libfreetype6-dev libpng-dev libfreetype6-dev
 
+# Add Python 2.7 from archive
+RUN echo "deb http://archive.debian.org/debian/ stretch main" > /etc/apt/sources.list.d/stretch.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    python2.7 \
+    python2.7-dev \
+    curl
+
+# Add symbolic link for python command
+RUN ln -s /usr/bin/python2.7 /usr/bin/python2
+
 # Install BCMath
 RUN docker-php-ext-install bcmath
 
 # Upadte memory limit for php
 RUN echo "memory_limit = 512M" > /usr/local/etc/php/conf.d/memory-limit.ini
 
-# Install node and npm
-## Download and import the Nodesource GPG key
-RUN mkdir -p /etc/apt/keyrings && \
-    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-## Create deb repository
-RUN NODE_MAJOR=20 &&\
-    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-## Run Update and Install
-RUN apt update && apt install -y nodejs
+# Install NVM, Node.js and NPM
+ENV NVM_DIR /root/.nvm
+ENV NODE_VERSION 20.18.1
+
+RUN mkdir -p $NVM_DIR && \
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
+    . $NVM_DIR/nvm.sh && \
+    nvm install $NODE_VERSION && \
+    nvm alias default $NODE_VERSION && \
+    nvm use default
+
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 ## Install tools
 # Install aws cli v2
